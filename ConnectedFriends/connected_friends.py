@@ -1,3 +1,5 @@
+from __future__	import	division							#	integer	division is	lame
+
 
 users	=	[
             {	"id":	0,	"name":	"Hero"	},
@@ -30,7 +32,6 @@ def	number_of_friends(user):
 total_connections = sum(number_of_friends(user) for	user in	users)      #	24
 
 
-from __future__	import	division							#	integer	division is	lame
 num_users = len(users)										#	length	of	the	users list
 avg_connections	= total_connections / num_users			    #	2.4
 
@@ -41,3 +42,5 @@ num_friends_by_id = [(user["id"],	number_of_friends(user)) for user in users]
 # sorted(num_friends_by_id, key=lambda (user_id, num_friends) : num_friends, reverse=True)
 
 sorted(num_friends_by_id, key=lambda item : item[1], reverse=True)
+
+print(num_friends_by_id)
