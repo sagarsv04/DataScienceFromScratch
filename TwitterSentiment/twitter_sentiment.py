@@ -20,7 +20,7 @@ until_date = "2017-04-06"
 
 # read credentials from ini file
 config = configparser.ConfigParser()
-config.read('./credentials.ini')
+config.read('../credentials.ini')
 
 # Authenticate
 consumer_key    = config['Consumer']['API Key']
