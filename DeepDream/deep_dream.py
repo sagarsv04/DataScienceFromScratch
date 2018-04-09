@@ -4,12 +4,13 @@ import PIL.Image
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import urllib.request
+import cv2
 import os, sys
 import zipfile
 
 
 # os.getcwd()
-# os.chdir(r'E:\to_be_deleted\DataSciencePractice\DeepDream')
+# os.chdir(r'D:\CodeRepo\DataSciencePractice\DeepDream')
 
 url = 'https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip'
 data_dir = './data/'
@@ -61,7 +62,7 @@ def check_if_video(file_path):
         return False
 
 
-def download_inception():
+def download_inception(data_dir):
     make_dir(data_dir)
     model_name = os.path.split(url)[-1]
 
@@ -81,7 +82,7 @@ def download_inception():
 
 
 def run_deepdream(input_filename):
-
+    # input_filename = 'input.jpg'
     # Creating Tensorflow session and loading the model
     graph = tf.Graph()
     sess = tf.InteractiveSession(graph=graph)
@@ -208,7 +209,6 @@ def run_deepdream(input_filename):
 
         # return frame
         output_frame = img / 255.0
-        output_frame = np.uint8(np.clip(output_frame, 0, 1)*255)
         return output_frame
 
 
@@ -223,7 +223,8 @@ def run_deepdream(input_filename):
     elif check_if_video(input_filename):
         # open video file
         cap = cv2.VideoCapture(input_filename)
-
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print('Frame length {0}.'.format(length))
         writer = None
         i = 0
         while(cap.isOpened()):
@@ -234,11 +235,11 @@ def run_deepdream(input_filename):
             output_frame = render_deepdream(tf.square(T('mixed3a')), frame)
             if writer is None:
                 frame_size = (output_frame.shape[1], output_frame.shape[0])
-                writer = cv2.VideoWriter('./output.avi', cv2.cv.FOURCC(*'XVID'), 30, frame_size)
+                writer = cv2.VideoWriter('./output.avi', cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 30, frame_size)
 
-            writer.write(output_frame)
+            writer.write(np.uint8(np.clip(output_frame, 0, 1)*255))
             i += 1
-            print('Frame %i complete.' % i)
+            print('Frame {0} of {1} complete.'.format(i, length))
 
         cap.release()
 
@@ -254,7 +255,7 @@ def main():
         input_filename = sys.argv[1]
         print("Input file given:", input_filename)
 
-        download_inception()
+        download_inception(data_dir)
         # run deepdream on video or image file
         run_deepdream(input_filename)
     else:

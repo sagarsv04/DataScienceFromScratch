@@ -104,3 +104,6 @@ ENV/
 /data
 *.ini
 *.jpg
+*.avi
+*.mp4
+delete.py
